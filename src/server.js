@@ -10,9 +10,7 @@ const server = express();
 
 server.use(cors());
 
-// define a extensão e a instância do handlebars com o modelo que será interpretado o código
 server.engine('.hbs', exphbs.engine({ extname: '.hbs', defaultLayout: "template"}));
-// define qual o template a ser utilizado
 server.set('view engine', 'hbs');
 server.set('views', path.join(__dirname, '/views'));
 
