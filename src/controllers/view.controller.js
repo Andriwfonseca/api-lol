@@ -27,9 +27,38 @@ exports.maestrias = async (req, res) => {
     try {
         const summonerName = req.params.summonerName;
         const response = await axios.get(URL + '/api/maestrias/' + summonerName);
-        const data = response.data;
-        res.render('maestrias', { data: data });
+        const masterys = response.data;
+
+        const masterysArray = Object.values(masterys).map(mastery => [mastery]);
+
+        const fs = require('fs');
+
+        fs.readFile('src/data/champions.json', 'utf8', (err, json) => {
+            if (err) throw err;    
+            const champions = JSON.parse(json);  
+
+            const data = [];
+        
+            for(let i=0;i<masterysArray.length;i++){            
+                if(masterysArray[i][0].championId){
+                    const champ = champions.find((champ)=> masterysArray[i][0].championId == champ[0].key); 
+                    
+                    if(champ && champ[0]){
+                        const championMasteries = {
+                            champion: champ[0],
+                            mastery: masterysArray[i][0]
+                        }                    
+                        data.push(
+                            championMasteries
+                        )
+                    }                
+                }            
+            }
+
+            res.render('maestrias', { data: data });        
+        });
     } catch (error) {
         console.error(error);        
     }
 }
+    

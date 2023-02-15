@@ -77,3 +77,34 @@ exports.match = async (req, res) => {
     }
     
 }
+
+//todos campeoes
+exports.allChampions = async (req, res) => {
+    const URL = "http://ddragon.leagueoflegends.com/cdn/9.19.1/data/pt_BR/champion.json";
+    const headers = { "X-Riot-Token": process.env.API_KEY };
+
+    const response = await axios.get(URL, {headers}).catch((e) => res.json(e));
+
+    if(response.data){
+        res.json(response.data);
+    }
+}
+
+
+//todos campeoes
+exports.champion = async (req, res) => {
+    const { championId } = req.params;
+    const URL = "http://ddragon.leagueoflegends.com/cdn/9.19.1/data/pt_BR/champion.json";
+    const headers = { "X-Riot-Token": process.env.API_KEY };
+
+    const response = await axios.get(URL, {headers}).catch((e) => res.json(e));
+
+    if(response.data){
+        const champion = Object.values(response.data.data).find(champion => champion.key === championId);
+        if(champion){
+            res.json(champion);
+        }else{
+            res.json({error: "Id do campeão não encontrado"})
+        }
+    }
+}
